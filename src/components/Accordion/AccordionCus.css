@@ -1,0 +1,93 @@
+.accordion-button {
+  background-color: #2d333b !important;
+  color: #cdd9e5 !important;
+  width: 100%;
+}
+
+.accordion-button::after {
+  display: none;
+}
+
+.accordion.accordion-flush {
+  background-color: #2d333b;
+}
+
+.accordion-item {
+  border-bottom: 0;
+}
+
+.accordion-header {
+  background-color: #2d333b !important;
+  border: 0.5px solid #7f8d9aa1;
+  border-top: 0;
+}
+
+.accordion-fixed-nav {
+  border-top: 0.5px solid #7f8d9aa1;
+  margin: 8rem 20px 20px 20px;
+}
+
+.accor-release-loading {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.accor-release-loading h3 {
+  color: rgb(205, 217, 229);
+}
+
+.accor-header-wrapper {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.accor-header-left {
+  padding-top: 5px;
+  pointer-events: none;
+}
+
+.accor-header-right a {
+  text-decoration: none;
+  color: #cdd9e581;
+  font-weight: 600;
+}
+.accor-header-right a:last-child {
+  color: #cdd9e5;
+  background-color: #444c57;
+  padding: 5px 7px;
+  border-radius: 3px;
+}
+.accor-header-right a:hover {
+  color: #62a3e3;
+}
+.accor-header-right {
+  gap: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.accor-header-right p {
+  margin-bottom: 0;
+  font-size: 12px;
+}
+
+.accor-header-right div {
+  font-size: 10px;
+  color: #cdd9e581;
+  padding-top: 3px;
+  font-weight: 300;
+  pointer-events: none;
+}
+
+@media only screen and (max-width: 46.1875em) {
+  .accor-header-right div {
+    display: none;
+  }
+  .accor-header-right a:first-child {
+    display: none;
+  }
+}
