@@ -1,4 +1,5 @@
 import React, { useContext, useState } from "react";
+import CommitContext from "../../storage/commit-context";
 import ReleaseContext from "../../storage/release-context";
 import showToastMessage from "../../utils/toastMessage";
 import classes from "./Navigation.module.css";
@@ -6,6 +7,7 @@ import classes from "./Navigation.module.css";
 function Navigation() {
   const [releaseUrl, setReleaseUrl] = useState("");
   const releaseCtx = useContext(ReleaseContext);
+  const commitCtx = useContext(CommitContext);
 
   const onClickGetButtonHandle = () => {
     let repoOwnerStr;
@@ -15,9 +17,10 @@ function Navigation() {
       showToastMessage("Please enter valid value!", "error");
       return;
     }
-    const releaseApiUrl = `https://api.github.com/repos/${repoOwnerStr}/releases`;
+    const releaseApiUrl = `https://api.github.com/repos/${repoOwnerStr}/releases?per_page=100`;
     releaseCtx.setReleaseUrl(releaseApiUrl);
     releaseCtx.setRepoOwnerStr(repoOwnerStr);
+    commitCtx.setRepoOwnerStr(repoOwnerStr);
   };
 
   const onChangeInputHandle = (event) => {

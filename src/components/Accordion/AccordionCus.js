@@ -22,14 +22,11 @@ function AccordionCus() {
     });
 
     if (release.prevReleaseTagName) {
-      const commitsUrl = `https://api.github.com/repos/${releaseCtx.repoOwnerStr}/compare/${release.prevReleaseTagName}...${release.tagName}`;
+      const commitsUrl = `https://api.github.com/repos/${releaseCtx.repoOwnerStr}/compare/${release.prevReleaseTagName}...${release.tagName}?per_page=100`;
       commitCtx.setCommitUrl(commitsUrl);
     } else {
-      // const firstReleaseCommitUrl = `https://api.github.com/repos/${releaseCtx.repoOwnerStr}/commits`;
-      // commitCtx.fetchCommitsFirstReleaseHandle(
-      //   firstReleaseCommitUrl,
-      //   releaseCtx.repoOwnerStr
-      // );
+      const firstReleaseCommitUrl = `https://api.github.com/repos/${releaseCtx.repoOwnerStr}/commits/${release.tagName}`;
+      commitCtx.fetchCommitsFirstRelease(firstReleaseCommitUrl);
     }
   };
   return (

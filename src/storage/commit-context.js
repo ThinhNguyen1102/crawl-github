@@ -7,8 +7,11 @@ const CommitContext = React.createContext({
   commitsUrl: "",
   isLoading: false,
   errorFetch: null,
+  repoOwnerStr: "",
+  repoCommits: [],
+  setRepoOwnerStr: () => {},
   setCommitUrl: () => {},
-  // fetchCommitsFirstReleaseHandle: (firstReleaseCommitUrl, repoOwnerStr) => {},
+  fetchCommitsFirstRelease: () => {},
 });
 
 export const CommitContextProvider = (props) => {
@@ -16,30 +19,79 @@ export const CommitContextProvider = (props) => {
   const [isLoading, setIsloading] = useState(false);
   const [errorFetch, setErrorFetch] = useState(null);
   const [commitsUrl, setCommitUrl] = useState("");
-  // const [firstReleaseCommits, setFirstReleaseCommits] = useState([]);
+  const [repoOwnerStr, setRepoOwnerStr] = useState("");
+  const [repoCommits, setRepoCommits] = useState([]);
 
-  // const fetchCommitsFirstReleaseHandle = async (
-  //   firstReleaseCommitUrl,
-  //   repoOwnerStr
-  // ) => {
-  //   setIsloading(true);
-  //   try {
-  //     const result = await axios.get(firstReleaseCommitUrl, {
-  //       per_page: 50,
-  //     });
-  //     console.log(firstReleaseCommitUrl);
-  //     console.log(result.data.length);
-  //   } catch (err) {
-  //     setCommits([]);
-  //     setIsloading(false);
-  //     if (err.response) {
-  //       showToastMessage(err.response.data.message, "error");
-  //     } else {
-  //       showToastMessage(err.message, "error");
-  //     }
-  //     throw err;
-  //   }
-  // };
+  const fetchCommitsFirstRelease = async (commitUrl) => {
+    let commitIndex;
+    let commits = [];
+    try {
+      const { data } = await axios.get(commitUrl);
+      if (data.sha) {
+        commitIndex = repoCommits.findIndex((val) => {
+          return val.sha === data.sha;
+        });
+
+        commits = repoCommits.slice(commitIndex, repoCommits.length - 1);
+
+        setCommits(commits);
+      }
+    } catch (err) {
+      if (err.response) {
+        showToastMessage(err.response.data.message, "error");
+      } else {
+        showToastMessage(err.message, "error");
+      }
+      throw err;
+    }
+  };
+
+  useEffect(() => {
+    if (repoOwnerStr) {
+      const repoUrl = `https://api.github.com/repos/${repoOwnerStr}/commits?per_page=100`;
+
+      const fetchAllCommitsRepo = async (repoUrl) => {
+        let commits = [];
+        for (let x = 1; ; x++) {
+          const result = await axios.get(repoUrl + `&page=${x}`);
+
+          if (result.data.length === 0) {
+            return commits;
+          }
+
+          const data = result.data.map((val) => {
+            return {
+              sha: val.sha,
+              url: val.url,
+              htmlUrl: val.html_url,
+              committer: val.commit.committer.name,
+              commitedDate: val.commit.committer.date,
+              message: val.commit.message,
+            };
+          });
+
+          commits = [...commits, ...data];
+        }
+      };
+
+      setIsloading(true);
+
+      fetchAllCommitsRepo(repoUrl)
+        .then((result) => {
+          setIsloading(false);
+          setRepoCommits(result);
+        })
+        .catch((err) => {
+          setIsloading(false);
+          if (err.response) {
+            showToastMessage(err.response.data.message, "error");
+          } else {
+            showToastMessage(err.message, "error");
+          }
+          throw err;
+        });
+    }
+  }, [repoOwnerStr]);
 
   const fetchCommitsHandle = useCallback(async () => {
     setIsloading(true);
@@ -90,8 +142,11 @@ export const CommitContextProvider = (props) => {
         commitsUrl: commitsUrl,
         isLoading: isLoading,
         errorFetch: errorFetch,
+        repoOwnerStr: repoOwnerStr,
+        repoCommits: repoCommits,
+        setRepoOwnerStr: setRepoOwnerStr,
         setCommitUrl: setCommitUrl,
-        // fetchCommitsFirstReleaseHandle: fetchCommitsFirstReleaseHandle,
+        fetchCommitsFirstRelease: fetchCommitsFirstRelease,
       }}
     >
       {props.children}

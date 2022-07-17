@@ -53,7 +53,6 @@ export const ReleaseContextProvider = (props) => {
         });
 
         setReleases(releasesFetch);
-        console.log(releasesFetch);
       } catch (err) {
         setErrorFetch(err.message);
         setReleases([]);
